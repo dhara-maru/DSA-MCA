@@ -1,124 +1,104 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX 100 
+struct Node{
+    int data;
+    struct Node* next;
+};
 
-int arr[MAX]; 
-int next[MAX];
-int head = -1;
-int avail = 0;  
+struct Node *first = NULL;
 
-
-void initialize() {
-    for (int i = 0; i < MAX - 1; i++) {
-        next[i] = i + 1;
+void insert_begin(int x){
+    if(first == NULL){
+        first = (struct Node*)malloc(sizeof(struct Node));
+        first->data = x;
+        first->next = NULL;
+    }else{
+        struct Node *new_node = (struct Node*)malloc(sizeof(struct Node));
+        new_node->data = x;
+        new_node->next = first;
+        first = new_node;
     }
-    next[MAX - 1] = -1; 
 }
 
-int getNode() {
-    if (avail == -1) {
-        printf("Memory full!\n");
-        return -1;
+void insert_end(int x){
+    if(first == NULL){
+        first = (struct Node*)malloc(sizeof(struct Node));
+        first->data = x;
+        first->next = NULL;
+    }else{
+        struct Node *new_node = (struct Node*)malloc(sizeof(struct Node));
+        new_node->data = x;
+        new_node->next = NULL;
+        // first = new_node;
+
+        if(first == NULL){
+            first = new_node;
+        }else{
+            struct Node *temp = first;
+
+            while (temp->next != NULL){
+                temp = temp->next;
+            }
+            temp->next = new_node;
+        }
     }
-    int newNode = avail;
-    avail = next[avail]; 
-    return newNode;
 }
 
+void display(){
+    struct Node *temp;
+    temp = first;
 
-void insertAtBeginning(int value) {
-    int newNode = getNode();
-    if (newNode == -1) return;
-
-    arr[newNode] = value;
-    next[newNode] = head;
-    head = newNode;
+    if(first == NULL){
+        printf("List is empty");
+    }else{
+        while(temp != NULL){
+            printf("%d ",temp->data);
+            temp = temp->next;
+        }
+        printf("\n");
+    }
 }
 
+int count_nodes(){
+    int count = 0;
+    struct Node *temp; 
+    temp = first;
 
-void insertAtEnd(int value) {
-    int newNode = getNode();
-    if (newNode == -1) return;
-
-    arr[newNode] = value;
-    next[newNode] = -1;
-
-    if (head == -1) {
-        head = newNode;
-        return;
-    }
-
-    int temp = head;
-    while (next[temp] != -1) {
-        temp = next[temp];
-    }
-    next[temp] = newNode;
-}
-
-
-void display() {
-    if (head == -1) {
-        printf("List is empty!\n");
-        return;
-    }
-
-    int temp = head;
-    printf("Linked List: ");
-    while (temp != -1) {
-        printf("%d -> ", arr[temp]);
-        temp = next[temp];
-    }
-    printf("NULL\n");
-}
-
-
-int countNodes() {
-    int count = 0, temp = head;
-    while (temp != -1) {
+    while (temp != NULL){
         count++;
-        temp = next[temp];
+        temp = temp->next;
     }
     return count;
 }
 
+void main(){
+    int ch;
+    do{
+        printf("\n1.Insert_at_first\n2.Insert_at_last\n3.Display\n4.Count Nodes\n5.Exit");
+        printf("\nEnter your choice: ");
+        scanf("%d",&ch);
 
-void main() {
-    int choice, value;
-    initialize();
+        int x;
 
-    while (1) {
-        printf("\nMenu:\n");
-        printf("1. Insert at Beginning [A]\n");
-        printf("2. Insert at End [A]\n");
-        printf("3. Display List [B]\n");
-        printf("4. Count Nodes [C]\n");
-        printf("5. Exit\n");
-        printf("Enter your choice: ");
-        scanf("%d", &choice);
-
-        switch (choice) {
-            case 1:
-                printf("Enter value: ");
-                scanf("%d", &value);
-                insertAtBeginning(value);
-                break;
-            case 2:
-                printf("Enter value: ");
-                scanf("%d", &value);
-                insertAtEnd(value);
-                break;
-            case 3:
-                display();
-                break;
-            case 4:
-                printf("Number of nodes: %d\n", countNodes());
-                break;
-            case 5:
-                exit(0);
-            default:
-                printf("Invalid choice! Try again.\n");
+        switch (ch)
+        {
+        case 1 : printf("Enter the value you want to insert :");
+                 scanf("%d",&x);
+                 insert_begin(x);
+            break;
+        case 2 : printf("Enter the value you want to insert :");
+                 scanf("%d",&x);
+                 insert_end(x);
+            break;
+        case 3 : display();
+            break;
+        case 4 : printf("Total nodes in the list : %d\n",count_nodes());
+            break;
+        case 5 : printf("Exit");
+                 return;
+        default: printf("Invalid Choicee");
+            break;
         }
-    }
- 
+    }while(ch != 5);
 }
